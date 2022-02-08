@@ -2,6 +2,7 @@ package com.st.sp.bean;
 
 
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.*;
 import org.springframework.stereotype.Component;
 
@@ -33,7 +34,7 @@ public class MyAspect2 {
     // 如 ： throwing = "e"   发生异常时用来接受异常信息的
     // returning = "result"   正确返回的时候 用来接收 执行结果
     //方法开始时调用时使用
-    @Before("myEx()")
+    //@Before("myEx()")
     public static void before(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         Object[] parateters = joinPoint.getArgs();  //通过连接点获取参数列表
@@ -41,25 +42,48 @@ public class MyAspect2 {
     }
 
     //方法最终结束时使用
-    @After("myEx()")
+    //@After("myEx()")
     public static void after(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         System.out.println(methodName + "方法结束");
     }
 
     //方法异常时使用
-    @AfterThrowing(value = "myEx()", throwing = "e")
+    //@AfterThrowing(value = "myEx()", throwing = "e")
     public static void afterThrowing(JoinPoint joinPoint, Exception e) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         System.out.println(methodName + "方法运行异常,异常信息:" + e);
     }
 
     //方法正常返回时使用
-    @AfterReturning(value = "myEx()", returning = "result")
+    //@AfterReturning(value = "myEx()", returning = "result")
     public static void afterReturning(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         Object[] parateters = joinPoint.getArgs();  //通过连接点获取参数列表
         System.out.println(methodName + "方法正常运行完成,参数是" + Arrays.asList(parateters) + ",结果是:" + result);
+    }
+
+    /***
+     * 环绕通知 ： Spring 中最强大的通知类型
+     * @Around  : 实际上就是 动态代理
+     *
+     * **/
+    @Around("myEx()")
+    public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable{
+        Object[] args = proceedingJoinPoint.getArgs();
+        String methodName = proceedingJoinPoint.getSignature().getName();
+        Object result  = null;
+        try {
+            // 通过反射执行方法proceedingJoinPoint.proceed(args);
+            System.out.println("环绕前置通知,"+methodName+" 方法开始执行"+" 参数是:"+Arrays.asList(args));
+            result = proceedingJoinPoint.proceed(args);
+            System.out.println("环绕返回通知,"+methodName+" 方法执行完成得到结果："+ result);
+        }catch (Exception e){
+            System.out.println("环绕异常通知,"+methodName+" 方法执行出现异常："+ e);
+        }finally {
+            System.out.println("环绕后置通知,"+methodName+" 方法执行结束");
+        }
+        return result;
     }
 
 }
