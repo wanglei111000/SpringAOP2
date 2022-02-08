@@ -22,7 +22,7 @@ public class Tester {
         caculater.min(10,6);
         caculater.multi(10,6);
         caculater.div(2,1);
-        //caculater.div(2,0);
+        caculater.div(2,0);
 //执行结果
 //        add方法开始运行,参数是[1, 2]
 //        add方法结束

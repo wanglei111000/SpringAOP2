@@ -10,6 +10,15 @@ import java.util.Arrays;
 @Component
 @Aspect
 public class MyAspect2 {
+
+    //抽取公用的切入点表达式
+    //1：任意编写一个 没有方法体的void 修饰的方法
+    //2: 添加注解和切入点表达式 @Pointcut("execution(public int com.st.sp.impl.MyCaculater.*(..))")
+    //3： 将 myEx()  加入到 每一个切面方法中 如：  @Before("myEx()")
+    @Pointcut("execution(public int com.st.sp.impl.MyCaculater.*(..))")
+    public void myEx(){};
+
+
     //切入点表达式  execution(访问权限 返回值 方法全路径(参数列表))
     //execution(public int com.st.sp.impl.MyCaculater.add(int,int))
     //还可以用 *  和  .. 来使用在表达式中
@@ -24,7 +33,7 @@ public class MyAspect2 {
     // 如 ： throwing = "e"   发生异常时用来接受异常信息的
     // returning = "result"   正确返回的时候 用来接收 执行结果
     //方法开始时调用时使用
-    @Before("execution(public int com.st.sp.impl.MyCaculater.*(..))")
+    @Before("myEx()")
     public static void before(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         Object[] parateters = joinPoint.getArgs();  //通过连接点获取参数列表
@@ -32,21 +41,21 @@ public class MyAspect2 {
     }
 
     //方法最终结束时使用
-    @After("execution(public int com.st.sp.impl.MyCaculater.*(..))")
+    @After("myEx()")
     public static void after(JoinPoint joinPoint) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         System.out.println(methodName + "方法结束");
     }
 
     //方法异常时使用
-    @AfterThrowing(value = "execution(public int com.st.sp.impl.MyCaculater.*(..))", throwing = "e")
+    @AfterThrowing(value = "myEx()", throwing = "e")
     public static void afterThrowing(JoinPoint joinPoint, Exception e) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         System.out.println(methodName + "方法运行异常,异常信息:" + e);
     }
 
     //方法正常返回时使用
-    @AfterReturning(value = "execution(public int com.st.sp.impl.MyCaculater.*(..))", returning = "result")
+    @AfterReturning(value = "myEx()", returning = "result")
     public static void afterReturning(JoinPoint joinPoint, Object result) {
         String methodName = joinPoint.getSignature().getName();  //通过连接点获取方法名称
         Object[] parateters = joinPoint.getArgs();  //通过连接点获取参数列表
