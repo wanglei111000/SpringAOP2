@@ -68,6 +68,9 @@ public class MyAspect2 {
      * @Around  : 实际上就是 动态代理
      * 当别的通知类型和环绕通知都存在的时候 ： 环绕通知得优先级更高,因为其它通知也得等待
      * 环绕的proceedingJoinPoint.proceed(args); 这个方法执行了才能执行别的通知
+     * 如果仅仅需要 通知，不需要执行动态代理的时候 用普通的通知 ，要执行动态代理用环绕通知
+     * 如果有别的 切面类需要 使用同一个切面里面的方法时 ，需要在另一个切面中 添加 现有切面表达式的 全路径
+     * @After("com.st.sp.bean.MyAspect2.myEx()")   写在需要引用的切面类中
      * **/
     @Around("myEx()")
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable{
@@ -87,4 +90,9 @@ public class MyAspect2 {
         return result;  //不能随意串改
     }
 
+    // aop 的作用:
+    // 记录日志
+    // 权限校验
+    // 安全校验
+    // 事务控制
 }
