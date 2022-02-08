@@ -66,7 +66,8 @@ public class MyAspect2 {
     /***
      * 环绕通知 ： Spring 中最强大的通知类型
      * @Around  : 实际上就是 动态代理
-     *
+     * 当别的通知类型和环绕通知都存在的时候 ： 环绕通知得优先级更高,因为其它通知也得等待
+     * 环绕的proceedingJoinPoint.proceed(args); 这个方法执行了才能执行别的通知
      * **/
     @Around("myEx()")
     public Object around(ProceedingJoinPoint proceedingJoinPoint) throws Throwable{
@@ -83,7 +84,7 @@ public class MyAspect2 {
         }finally {
             System.out.println("环绕后置通知,"+methodName+" 方法执行结束");
         }
-        return result;
+        return result;  //不能随意串改
     }
 
 }
